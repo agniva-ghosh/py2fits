@@ -49,11 +49,11 @@ ny = nx = int(round(sqrt(N))) #comment this line if input is a square array
 data.shape = nx, ny, nvar
 data = data.T  # nvar, ny, nx
 data = data[:,:,::-1]  # flip RA: increases right to left
-dRA, dDec, variable = data  #Change if needed
+x, y, var = data  #Change if needed, x and y are in arcsec
 
 
 # Define the pixel separation used
-pixarcsec = dDec[1,0] - dDec[0,0]  # should be in arcsec
+pixarcsec = y[1,0] - y[0,0]  # should be in arcsec
 pixdeg = pixarcsec / 3600. # convert into degrees
 
 # Define the reference pixel and corresponding RA and dec
@@ -65,7 +65,7 @@ Dec0 = -1.500               # Change if needed
 inwcs = x0, y0, RA0, Dec0, pixdeg
 
 # Use the createFITS function to generate the fits file
-createFITS(variable, inwcs, outfile)
+createFITS(var, inwcs, outfile)
 
 
 
