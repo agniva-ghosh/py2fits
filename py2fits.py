@@ -1,7 +1,7 @@
 from numpy import *
 from astropy.io import fits
 
-def savewcsfits(data, inwcs, outfile):
+def createFITS(data, inwcs, outfile): #function to create the FITS header
     hdu1 = fits.PrimaryHDU()
     hdu  = fits.HDUList([hdu1])
     hdu[0].data = data
@@ -38,12 +38,11 @@ def savewcsfits(data, inwcs, outfile):
     hdu[0].header = header
     hdu.writeto(outfile)
 
+# Define the input and output filepaths
 infile  = 'input.dat' #structured data file as input
-outfile0 = 'output.fits' #edit your output file name
+outfile = 'output.fits' #edit your output file name
 
-
-
-print(('Loading %s...') % infile)
+# Restructure the data for the FITS
 data = loadtxt(infile)
 N, nvar = data.shape
 ny = nx = int(round(sqrt(N))) #comment this line if input is a square array
@@ -52,12 +51,12 @@ data = data.T  # nvar, ny, nx
 data = data[:,:,::-1]  # flip RA: increases right to left
 dRA, dDec, variable = data  #Change if needed
 
-# print(data)
 
-pixarcsec = dDec[1,0] - dDec[0,0]  # 0.2" / pixel
-pixdeg = pixarcsec / 3600.
+# Define the pixel separation used
+pixarcsec = dDec[1,0] - dDec[0,0]  # should be in arcsec
+pixdeg = pixarcsec / 3600. # convert into degrees
 
-# REFERENCE PIXEL
+# Define the reference pixel and corresponding RA and dec
 x0 = nx / 2.
 y0 = ny / 2.
 RA0 = 40.00                # Change if needed, "should be in degrees"
@@ -65,8 +64,8 @@ Dec0 = -1.500               # Change if needed
 
 inwcs = x0, y0, RA0, Dec0, pixdeg
 
-print(('CREATING %s...') % outfile)
-savewcsfits(variable, inwcs, outfile)
+# Use the createFITS function to generate the fits file
+createFITS(variable, inwcs, outfile)
 
 
 
